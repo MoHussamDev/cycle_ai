@@ -24,7 +24,12 @@ export async function POST(req: NextRequest) {
 
     const data = await response.json();
     return NextResponse.json({ response: data.data.result });
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+  } catch (error: unknown) {
+    console.log(error);
+    let message = "An unknown error occurred";
+    if (error instanceof Error) {
+      message = error.message;
+    }
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

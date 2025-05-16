@@ -54,7 +54,7 @@ export async function POST(req: NextRequest) {
       body: `{"url": "${url}"}`,
     };
     const sessionId = data.data.id;
-    const sessionGoto = await fetch(
+    await fetch(
       `https://api.anchorbrowser.io/v1/sessions/${sessionId}/goto`,
       optionsgoto
     );
@@ -62,8 +62,12 @@ export async function POST(req: NextRequest) {
       liveUrl: data.data.live_view_url,
       sessionId: sessionId,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.log(error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    let message = "An unknown error occurred";
+    if (error instanceof Error) {
+      message = error.message;
+    }
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
